@@ -11,6 +11,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{45290444-E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleNotifyTests", "src\SimpleNotifyTests\SimpleNotifyTests.csproj", "{49B66FF3-13BC-46D2-8591-BFF0BBF626E1}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{930D6520-7204-44A1-A93E-7C662294B96A}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,5 +37,9 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E3ADBF91-FAAB-4D45-B768-426949CD70B5} = {9C805ABF-B36E-4CEE-8911-38F841EA8046}
+		{49B66FF3-13BC-46D2-8591-BFF0BBF626E1} = {45290444-E50A-4A50-83FB-6F327A0122AB}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CAB1D778-F2DA-462F-B45E-A0F2528A55DE}
 	EndGlobalSection
 EndGlobal
