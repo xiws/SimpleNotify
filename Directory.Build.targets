@@ -1,0 +1,7 @@
+﻿<Project>
+  <Target Name="showTargetFramework" AfterTargets="PostBuildEvent">
+	  <Exec Command="echo $(TargetFramework)_$(_SelfASPEnviroment)_$(SelfNewGuid)_$(Configuration)" />
+  </Target>
+
+ 
+</Project>

@@ -1,0 +1,11 @@
+﻿<Project>
+<PropertyGroup>
+	
+	<SelfNewGuid>$([System.Guid]::NewGuid())</SelfNewGuid>
+	<_SelfASPEnviroment>uat</_SelfASPEnviroment>
+	<TargetFramework>net6.0</TargetFramework>
+	<!--<TargetFramework>netcoreapp3.1</TargetFramework>-->
+	<TargetFramework Condition="'$(_SelfASPEnviroment)'=='Ali'">netcoreapp3.1</TargetFramework>
+</PropertyGroup>
+
+</Project>
