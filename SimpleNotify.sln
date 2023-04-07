@@ -9,12 +9,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleNotify", "src\SimpleN
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{45290444-E50A-4A50-83FB-6F327A0122AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleNotifyTests", "src\SimpleNotifyTests\SimpleNotifyTests.csproj", "{49B66FF3-13BC-46D2-8591-BFF0BBF626E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleNotifyTests", "src\SimpleNotifyTests\SimpleNotifyTests.csproj", "{49B66FF3-13BC-46D2-8591-BFF0BBF626E1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{930D6520-7204-44A1-A93E-7C662294B96A}"
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
 		Directory.Build.targets = Directory.Build.targets
+		README.md = README.md
 	EndProjectSection
 EndProject
 Global
