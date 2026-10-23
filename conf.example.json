@@ -1,0 +1,56 @@
+{
+  "server": {
+    "addr": "127.0.0.1:8899",
+    "password": "",
+    "allow_insecure_remote": false
+  },
+  "log": {
+    "level": "info",
+    "file": ""
+  },
+  "mail": {
+    "enabled": true,
+    "host": "imap.163.com",
+    "port": 993,
+    "security": "tls",
+    "insecure_skip_verify": false,
+    "username": "you@163.com",
+    "password": "",
+    "mailbox": "INBOX",
+    "poll_interval": "30s",
+    "on_start": "skip",
+    "mark_as_seen": false,
+    "send_id": true,
+    "max_message_bytes": 4194304,
+    "max_body_bytes": 262144
+  },
+  "execute": {
+    "shell": "/bin/bash",
+    "timeout": "30s",
+    "work_dir": "",
+    "max_output_bytes": 65536,
+    "env": {}
+  },
+  "state": {
+    "file": "state.json"
+  },
+  "history": {
+    "file": "",
+    "memory": 200
+  },
+  "rules": [
+    {
+      "id": "deploy",
+      "name": "部署通知",
+      "enabled": true,
+      "match": {
+        "from": "",
+        "subject_contains": "deploy",
+        "subject_regex": "",
+        "body_contains": "",
+        "body_regex": ""
+      },
+      "command": "echo \"收到部署邮件: {{.Subject}}\" >> /tmp/simple-notify.log"
+    }
+  ]
+}

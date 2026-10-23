@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SimpleNotify 管理台</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232f81f7'/%3E%3Cpath d='M8 11l8 6 8-6v10H8z' fill='%23fff'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span>SimpleNotify</span>
+    </div>
+    <div class="topbar-meta">
+      <span id="version" class="chip">dev</span>
+      <span id="uptime" class="muted">-</span>
+    </div>
+  </header>
+
+  <main class="page">
+    <div id="banner" class="banner hidden" role="alert"></div>
+
+    <section class="grid">
+      <article class="card">
+        <h2>邮箱接收</h2>
+        <div class="state-row">
+          <span id="mail-badge" class="badge badge-muted">加载中</span>
+          <span id="mail-host" class="muted mono"></span>
+        </div>
+        <dl class="kv">
+          <dt>账号</dt><dd id="mail-username">-</dd>
+          <dt>文件夹</dt><dd id="mail-mailbox">-</dd>
+          <dt>轮询间隔</dt><dd id="mail-interval">-</dd>
+          <dt>上次轮询</dt><dd id="mail-lastpoll">-</dd>
+          <dt>下次轮询</dt><dd id="mail-nextpoll">-</dd>
+          <dt>UID 游标</dt><dd id="mail-cursor">-</dd>
+          <dt>最近错误</dt><dd id="mail-error" class="error-text">-</dd>
+        </dl>
+      </article>
+
+      <article class="card">
+        <h2>执行配置</h2>
+        <dl class="kv">
+          <dt>Shell</dt><dd id="exec-shell" class="mono">-</dd>
+          <dt>超时</dt><dd id="exec-timeout">-</dd>
+          <dt>工作目录</dt><dd id="exec-workdir" class="mono">-</dd>
+          <dt>配置文件</dt><dd id="config-path" class="mono">-</dd>
+          <dt>监听地址</dt><dd id="server-addr" class="mono">-</dd>
+        </dl>
+      </article>
+    </section>
+
+    <section class="card counters">
+      <div class="counter"><span class="counter-label">轮询次数</span><strong id="c-polls">0</strong></div>
+      <div class="counter"><span class="counter-label">处理邮件</span><strong id="c-messages">0</strong></div>
+      <div class="counter"><span class="counter-label">命中规则</span><strong id="c-matched">0</strong></div>
+      <div class="counter"><span class="counter-label">执行成功</span><strong id="c-succeeded" class="ok">0</strong></div>
+      <div class="counter"><span class="counter-label">执行失败</span><strong id="c-failed" class="bad">0</strong></div>
+      <div class="counter"><span class="counter-label">未匹配</span><strong id="c-skipped">0</strong></div>
+    </section>
+
+    <nav class="tabs" role="tablist">
+      <button class="tab active" data-tab="rules" type="button" role="tab" aria-selected="true">规则</button>
+      <button class="tab" data-tab="history" type="button" role="tab" aria-selected="false">执行历史</button>
+    </nav>
+
+    <section id="panel-rules" class="card panel">
+      <div class="panel-head">
+        <h2>规则</h2>
+        <span id="rules-count" class="muted"></span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>规则</th><th>匹配条件</th><th>命令</th><th>最近执行</th></tr>
+          </thead>
+          <tbody id="rules-body"></tbody>
+        </table>
+      </div>
+      <p id="rules-empty" class="empty hidden">暂无规则，请编辑配置文件后重启或发送 SIGHUP。</p>
+    </section>
+
+    <section id="panel-history" class="card panel hidden">
+      <div class="panel-head">
+        <h2>执行历史</h2>
+        <span id="history-total" class="muted"></span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>时间</th><th>规则</th><th>邮件</th><th>状态</th><th>耗时</th><th>退出码</th></tr>
+          </thead>
+          <tbody id="history-body"></tbody>
+        </table>
+      </div>
+      <p id="history-empty" class="empty hidden">暂无执行记录。</p>
+    </section>
+  </main>
+
+  <aside id="drawer" class="drawer hidden" aria-hidden="true">
+    <div class="drawer-head">
+      <h2 id="drawer-title">执行详情</h2>
+      <button id="drawer-close" class="btn" type="button">关闭</button>
+    </div>
+    <div class="drawer-body">
+      <dl class="kv" id="drawer-meta"></dl>
+      <h3>命令</h3>
+      <pre id="drawer-command"></pre>
+      <h3>标准输出</h3>
+      <pre id="drawer-stdout"></pre>
+      <h3>标准错误</h3>
+      <pre id="drawer-stderr"></pre>
+      <div id="drawer-error-wrap">
+        <h3>错误</h3>
+        <pre id="drawer-error" class="error-text"></pre>
+      </div>
+    </div>
+  </aside>
+
+  <script src="/assets/app.js"></script>
+</body>
+</html>

@@ -348,3 +348,13 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+# SimpleNotify
+/notify
+conf.json
+state.json
+state.json.*
+data/
+test.py
+.DS_Store
+.idea/
