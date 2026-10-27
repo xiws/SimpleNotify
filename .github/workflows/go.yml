@@ -16,6 +16,7 @@ env:
   RELEASE_TAG: latest             # release tag
   RELEASE_NAME: Latest Build
   BUILD_FLAGS: -trimpath -ldflags="-s -w"
+  PROJECT_PATH: https://github.com/xiws/SimpleNotify
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -81,3 +82,19 @@ jobs:
           prerelease: true
           make_latest: false
           files: dist/*
+
+  notify:
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send mail
+        env:
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+        run: |
+          curl --url "smtps://smtp.163.com:465" \
+            --user "${SMTP_USER}:${SMTP_PASS}" \
+            --mail-from "${SMTP_USER}" \
+            --mail-rcpt "${SMTP_USER}" \
+            --ssl-reqd \
+            -T <(printf 'From: %s\nTo: %s\nSubject: deploy\n\n%s\n' "$SMTP_USER" "$SMTP_USER" "$env.APP_NAME" )
