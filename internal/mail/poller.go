@@ -170,7 +170,7 @@ func (p *Poller) PollOnce(ctx context.Context) error {
 	validity := conn.UIDValidity()
 	uidNext := conn.UIDNext()
 	if uidNext == 0 {
-		return fmt.Errorf("server did not report UIDNEXT for %s", mailbox)
+		return fmt.Errorf("could not determine UIDNEXT for %s", mailbox)
 	}
 
 	st, hasState := p.state.Get(mailbox)

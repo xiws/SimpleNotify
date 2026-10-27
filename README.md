@@ -170,6 +170,15 @@ export SN_MAIL_PASSWORD='你的邮箱授权码'
 }
 ```
 
+```bash
+curl --url "smtps://smtp.163.com" \
+  --user "23@163.com:123" \
+  --mail-from "23@163.com" \
+  --mail-rcpt "34@163.com" \
+  --ssl-reqd \
+  -T <(printf "From: 234@163.com\nTo: 收件人@zhongxiwang2@163.com\nSubject: deploy\n\nhello\n")
+```
+
 **匹配语义**
 
 - 所有非空条件按 **AND** 组合。
@@ -219,8 +228,9 @@ export SN_MAIL_PASSWORD='你的邮箱授权码'
    - `unread`：处理当前未读邮件；
    - `all`：处理邮箱内全部邮件（谨慎使用）。
 2. 之后每次只处理 `last_uid+1 .. UIDNEXT-1` 的新邮件。
-3. 每条邮件处理完成后立即落盘游标（即使命令失败也前进，避免失败邮件反复触发）。
-4. 连接失败时指数退避重试（上限 5 分钟），管理页仍可用。
+3. 部分服务器（如 163 / Coremail）不在 `SELECT` 响应中返回 `UIDNEXT`，此时程序读取邮箱内最大 UID 加一作为替代值；它只会偏小，不会漏掉之后到达的邮件。
+4. 每条邮件处理完成后立即落盘游标（即使命令失败也前进，避免失败邮件反复触发）。
+5. 连接失败时指数退避重试（上限 5 分钟），管理页仍可用。
 
 ### 投递语义
 

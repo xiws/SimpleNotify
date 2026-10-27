@@ -83,10 +83,46 @@ func Check(ctx context.Context, cfg config.Mail, version string) (CheckInfo, err
 	if err != nil {
 		return info, fmt.Errorf("select %s: %w", cfg.Mailbox, err)
 	}
+	uidNext, err := nextUID(ctx, c, data)
+	if err != nil {
+		return info, err
+	}
 	info.UIDValidity = data.UIDValidity
-	info.UIDNext = uint32(data.UIDNext)
+	info.UIDNext = uidNext
 	info.Messages = data.NumMessages
 	return info, nil
+}
+
+// nextUID returns the UID the server will assign to the next delivered message.
+//
+// RFC 3501 requires SELECT to report UIDNEXT, but some servers omit it
+// (163.com's Coremail among them). For those, derive it from the highest UID
+// currently in the mailbox: no message can exist above that value, so the next
+// delivery always gets a UID greater than it.
+func nextUID(ctx context.Context, c *imapclient.Client, data *imap.SelectData) (uint32, error) {
+	if data.UIDNext != 0 {
+		return uint32(data.UIDNext), nil
+	}
+	if err := ctx.Err(); err != nil {
+		return 0, err
+	}
+	if data.NumMessages == 0 {
+		return 1, nil
+	}
+	bufs, err := c.Fetch(imap.SeqSetNum(data.NumMessages), &imap.FetchOptions{UID: true}).Collect()
+	if err != nil {
+		return 0, fmt.Errorf("derive UIDNEXT from last message: %w", err)
+	}
+	var last imap.UID
+	for _, buf := range bufs {
+		if buf.UID > last {
+			last = buf.UID
+		}
+	}
+	if last == 0 {
+		return 0, fmt.Errorf("derive UIDNEXT from last message: server reported no UID")
+	}
+	return uint32(last) + 1, nil
 }
 
 // NewDialer returns an IMAP dialer.
@@ -109,11 +145,20 @@ func (d *imapDialer) Dial(ctx context.Context, cfg config.Mail) (Conn, error) {
 		c.Close()
 		return nil, fmt.Errorf("select %s: %w", cfg.Mailbox, err)
 	}
+	uidNext, err := nextUID(ctx, c, data)
+	if err != nil {
+		c.Close()
+		return nil, fmt.Errorf("select %s: %w", cfg.Mailbox, err)
+	}
+	if data.UIDNext == 0 {
+		d.logger.Debug("imap server did not report UIDNEXT, derived from mailbox",
+			"mailbox", cfg.Mailbox, "uid_next", uidNext)
+	}
 	return &imapConn{
 		client:      c,
 		logger:      d.logger,
 		uidValidity: data.UIDValidity,
-		uidNext:     uint32(data.UIDNext),
+		uidNext:     uidNext,
 	}, nil
 }
 
