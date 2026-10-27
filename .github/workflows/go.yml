@@ -1,0 +1,83 @@
+name: Build Latest
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  # ===== 全局可配置项 =====
+  APP_NAME: otter                 # 产物前缀
+  MAIN_PKG: ./cmd/notify             # 主包路径
+  GO_VERSION: "1.24.12"            # 用 x 命中缓存
+  RELEASE_TAG: latest             # release tag
+  RELEASE_NAME: Latest Build
+  BUILD_FLAGS: -trimpath -ldflags="-s -w"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - goos: linux
+            goarch: amd64
+            ext: ""
+          - goos: linux
+            goarch: arm64
+            ext: ""
+          - goos: windows
+            goarch: amd64
+            ext: ".exe"
+          - goos: darwin
+            goarch: amd64
+            ext: ""
+          - goos: darwin
+            goarch: arm64
+            ext: ""
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
+
+      - name: Build
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+          CGO_ENABLED: "0"
+          VERSION: ${{ github.ref_name }}
+        run: |
+          OUT="${APP_NAME}-${GOOS}-${GOARCH}${EXT:-${{ matrix.ext }}}"
+          go build ${{ env.BUILD_FLAGS }} -o "dist/$OUT" ${{ env.MAIN_PKG }}
+          echo "OUT=$OUT" >> $GITHUB_ENV
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.OUT }}
+          path: dist/${{ env.OUT }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.RELEASE_TAG }}
+          name: ${{ env.RELEASE_NAME }}
+          prerelease: true
+          make_latest: false
+          files: dist/*
