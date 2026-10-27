@@ -91,10 +91,11 @@ jobs:
         env:
           SMTP_USER: ${{ secrets.SMTP_USER }}
           SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          APP_NAME: ${{env.APP_NAME}}
         run: |
           curl --url "smtps://smtp.163.com:465" \
             --user "${SMTP_USER}:${SMTP_PASS}" \
             --mail-from "${SMTP_USER}" \
             --mail-rcpt "${SMTP_USER}" \
             --ssl-reqd \
-            -T <(printf 'From: %s\nTo: %s\nSubject: deploy\n\n%s\n' "$SMTP_USER" "$SMTP_USER" "$env.APP_NAME" )
+            -T <(printf 'From: %s\nTo: %s\nSubject: deploy\n\n%s\n' "$SMTP_USER" "$SMTP_USER" "$APP_NAME" )
