@@ -10,7 +10,7 @@ permissions:
 
 env:
   # ===== 全局可配置项 =====
-  APP_NAME: otter                 # 产物前缀
+  APP_NAME: notify                 # 产物前缀
   MAIN_PKG: ./cmd/notify             # 主包路径
   GO_VERSION: "1.24.12"            # 用 x 命中缓存
   RELEASE_TAG: latest             # release tag
